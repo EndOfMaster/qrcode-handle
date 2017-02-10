@@ -1,0 +1,5 @@
+server:
+  port: 8081
+mail:
+  enabled: false # 打印邮件内容到日志里
+  password: anything # 任意非空值，因为不会用到

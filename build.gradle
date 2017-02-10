@@ -1,0 +1,52 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public' }
+        jcenter()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.1.RELEASE")
+    }
+}
+
+allprojects {
+    group 'cn.nisharp.web'
+    version '1.0'
+
+    apply plugin: 'spring-boot'
+
+    repositories {
+        mavenLocal()
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public' }
+        jcenter()
+    }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Camden.RELEASE'
+    }
+}
+
+dependencies {
+
+    compile 'org.springframework.cloud:spring-cloud-starter-config'
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.boot:spring-boot-starter-mail'
+    compile 'org.springframework.boot:spring-boot-starter-actuator'
+    compile 'org.springframework.boot:spring-boot-starter-security'
+    compile 'org.springframework.boot:spring-boot-starter-data-mongodb'
+
+    compile 'org.springframework.session:spring-session'
+    compile 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    compile 'com.google.zxing:core:3.3.0'
+    compile 'org.apache.commons:commons-compress:1.13'
+
+    compile 'io.springfox:springfox-swagger2:2.5.0'
+    compile 'io.springfox:springfox-swagger-ui:2.5.0'
+
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+}
+
+[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'

@@ -1,0 +1,28 @@
+# 参考：
+# http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-configure-datasource
+server:
+  port: 80
+mail:
+  enabled: true #是否启用邮件服务，true启用，false不启用，而是打印邮件内容到日志中
+  username: service@payingcloud.cn
+  password:
+spring:
+  mail:
+    default-encoding: UTF-8
+    host: smtp.alibaba.com
+    protocol: smtp
+    test-connection: ${mail.enabled}
+    username: ${mail.username}
+    password: ${mail.password}
+  jackson:
+    serialization:
+      indent-output: true
+security:
+  ignored: /views/**,
+            /css/**,
+            /js/**,
+            /*.html,
+            /images/**,
+            /webjars/**,
+            /v2/api-docs,
+            /swagger-resources/**,
