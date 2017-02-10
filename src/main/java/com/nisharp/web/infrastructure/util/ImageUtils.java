@@ -1,4 +1,4 @@
-package com.nisharp.web.util;
+package com.nisharp.web.infrastructure.util;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -11,7 +11,7 @@ import java.io.IOException;
  */
 public class ImageUtils {
 
-    public static ByteArrayOutputStream overlapImg(String displayText,int displayTextLeftOffset, Image topImg, int topImgWidth, BufferedImage bottomImg, int topOffset) throws IOException {
+    public static ByteArrayOutputStream overlapImg(String displayText,int displayTextLeftOffset, BufferedImage topImg, int topImgWidth, BufferedImage bottomImg, int topOffset) throws IOException {
         //得到画笔对象
         Graphics g = bottomImg.getGraphics();
 

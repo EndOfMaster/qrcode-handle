@@ -4,10 +4,10 @@ import cn.payingcloud.commons.rest.exception.BadRequestException;
 import cn.payingcloud.commons.rest.exception.NotFoundException;
 import com.nisharp.web.domain.SignUp;
 import com.nisharp.web.domain.User;
+import com.nisharp.web.infrastructure.util.DateUtils;
+import com.nisharp.web.infrastructure.util.RandomUtils;
 import com.nisharp.web.repository.SignUpRepository;
 import com.nisharp.web.repository.UserRepository;
-import com.nisharp.web.util.DateUtils;
-import com.nisharp.web.util.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +38,7 @@ public class UserService {
     }
 
     public String getCode(String email) {
-        String code = RandomUtils.getRandomStr(6);
+        String code = RandomUtils.getRandomNum(6);
         SignUp signUp = new SignUp(email, code);
         signUpRepository.save(signUp);
         return code;
@@ -56,4 +56,5 @@ public class UserService {
         User user = new User(email, password);
         userRepository.save(user);
     }
+
 }

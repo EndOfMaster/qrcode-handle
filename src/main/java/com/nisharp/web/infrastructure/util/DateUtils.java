@@ -1,4 +1,4 @@
-package com.nisharp.web.util;
+package com.nisharp.web.infrastructure.util;
 
 import java.util.Date;
 

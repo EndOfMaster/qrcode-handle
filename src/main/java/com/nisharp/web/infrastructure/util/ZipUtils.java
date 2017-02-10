@@ -1,4 +1,4 @@
-package com.nisharp.web.util;
+package com.nisharp.web.infrastructure.util;
 
 import org.apache.commons.compress.archivers.zip.Zip64Mode;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
