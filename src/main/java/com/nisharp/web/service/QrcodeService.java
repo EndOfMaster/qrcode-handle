@@ -1,5 +1,6 @@
 package com.nisharp.web.service;
 
+import cn.payingcloud.commons.rest.exception.BadRequestException;
 import com.google.zxing.WriterException;
 import com.nisharp.web.infrastructure.util.QrcodeUtils;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -17,10 +18,16 @@ import java.io.IOException;
 @Service
 public class QrcodeService {
 
-    public void getQrcode(String content, int width, HttpServletResponse response) throws WriterException, IOException {
+    public void getQrcode(String content, int width, String paddingStr, HttpServletResponse response) throws WriterException, IOException {
         response.setContentType("image/png");
-        response.setHeader("Content-Disposition", "inline; filename=" + DigestUtils.md5Hex(content)+".png");
-        BufferedImage image = QrcodeUtils.createQrcode(content, width);
+        response.setHeader("Content-Disposition", "inline; filename=" + DigestUtils.md5Hex(content) + ".png");
+        int padding;
+        try {
+            padding = Integer.valueOf(paddingStr);
+        } catch (NumberFormatException e) {
+            throw new BadRequestException("数字格式不正确");
+        }
+        BufferedImage image = QrcodeUtils.createQrcode(content, width, padding);
         try (ServletOutputStream outputStream = response.getOutputStream()) {
             try (ByteArrayOutputStream file = QrcodeUtils.imageToStream(image)) {
                 response.setContentLength(file.toByteArray().length);
