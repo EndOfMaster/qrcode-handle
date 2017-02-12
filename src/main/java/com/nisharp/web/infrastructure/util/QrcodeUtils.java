@@ -13,8 +13,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -268,21 +266,6 @@ public class QrcodeUtils {
             }
         }
         return image;
-    }
-
-    public static void main(String[] args) throws IOException, WriterException {
-        // 依次为内容(不支持中文),宽,长,logo图标路径,储存路径
-        File imageFile = new File("D:\\logo.jpg");
-        //传进来的图
-        BufferedImage srcImage = ImageIO.read(imageFile);
-        ImageIO.write(getComplexQrcode("http://www.baidu.com/http://www.baidu.com/http://www.baidu.com/http://www.baidu.com/", 500, srcImage, 0, new Color(1, 255, 1), new Color(255, 255, 255, 0)), "png", new File("D:\\201301.png"));
-
-        BufferedImage image = QrcodeUtils.createSimpleQrcode("http://www.baidu.com/http://www.baidu.com/http://www.baidu.com/http://www.baidu.com/", 500, 0, new Color(0, 0, 0), new Color(255, 255, 255, 0));
-        try (FileOutputStream outputStream = new FileOutputStream("d:/zi.png")) {
-            try (ByteArrayOutputStream file = QrcodeUtils.imageToStream(image)) {
-                outputStream.write(file.toByteArray());
-            }
-        }
     }
 
 }

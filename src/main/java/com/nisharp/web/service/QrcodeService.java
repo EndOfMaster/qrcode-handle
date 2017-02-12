@@ -32,8 +32,12 @@ public class QrcodeService {
         }
         BufferedImage image;
         if (imageFile != null) {
-            BufferedImage srcImage = ImageIO.read(imageFile.getInputStream());
-            image = QrcodeUtils.getComplexQrcode(content, width, srcImage, padding, foregroundColor, backgroundColor);
+            try {
+                BufferedImage srcImage = ImageIO.read(imageFile.getInputStream());
+                image = QrcodeUtils.getComplexQrcode(content, width, srcImage, padding, foregroundColor, backgroundColor);
+            } catch (IOException e) {
+                throw new RuntimeException("图片读取错误");
+            }
         } else {
             image = QrcodeUtils.createSimpleQrcode(content, width, padding, foregroundColor, backgroundColor);
         }
