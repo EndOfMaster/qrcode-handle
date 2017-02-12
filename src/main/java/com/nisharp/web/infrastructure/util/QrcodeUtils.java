@@ -23,11 +23,11 @@ import java.util.Map;
  * @author ZM.Wang
  */
 public class QrcodeUtils {
-    private static final int BLACK = 0xFF000000;
-    private static final int WHITE = 0xFFFFFFFF;
     private static final int FRAME_WIDTH = 2;
     private static QRCodeWriter qrCodeWriter = new QRCodeWriter();
-    private static final Color color = new Color(255, 255, 255);
+    private static final Color white = Color.white;
+    private static final Color black = Color.black;
+
 
     /**
      * 生成简单二维码
@@ -38,26 +38,32 @@ public class QrcodeUtils {
      * @return
      * @throws WriterException
      */
-    public static BufferedImage createSimpleQrcode(String content, int width, int padding, Color color) throws WriterException {
+    public static BufferedImage createSimpleQrcode(String content, int width, int padding, Color foregroundColor, Color backgroundColor) throws WriterException {
         if (padding * 2 > width - 50) {
             throw new RuntimeException("边框过大");
         }
         BitMatrix bitMatrix = getBitMatrix(content, width);
         bitMatrix = deleteWhite(bitMatrix);
-        BufferedImage masterMap = toBufferedImage(bitMatrix, color == null ? QrcodeUtils.color : color);
-        return qrcodePaddingHandle(width, padding, masterMap, color == null ? QrcodeUtils.color : color);
+        BufferedImage masterMap = toBufferedImage(bitMatrix,
+                foregroundColor == null ? black : foregroundColor,
+                backgroundColor == null ? white : backgroundColor);
+        return qrcodePaddingHandle(width, padding, masterMap, backgroundColor == null ? white : backgroundColor);
     }
 
-    public static BufferedImage getComplexQrcode(String content, int width, BufferedImage srcImage, int padding) throws WriterException, IOException {
+    public static BufferedImage getComplexQrcode(String content, int width, BufferedImage srcImage, int padding, Color foregroundColor, Color backgroundColor) throws WriterException, IOException {
         if (padding * 2 > width - 50) {
             throw new RuntimeException("边框过大");
         }
+
+        foregroundColor = foregroundColor == null ? black : foregroundColor;
+        backgroundColor = backgroundColor == null ? white : backgroundColor;
+
         int iconWidth = width / 4;
         int iconHeight = width / 4;
         int iconHalfWidth = iconWidth / 2;
 
         //logo图
-        BufferedImage scaleImage = imageZoom(srcImage, iconWidth, iconHeight, color);
+        BufferedImage scaleImage = imageZoom(srcImage, iconWidth, iconHeight, white);
         //得到一个二维数组
         int[][] srcPixels = new int[iconHeight][iconWidth];
         //存储每个像素点的颜色
@@ -81,8 +87,8 @@ public class QrcodeUtils {
             for (int x = 0; x < matrix.getWidth(); x++) {
                 // 左上角颜色,根据自己需要调整颜色范围和颜色
 //                if (x > 0 && x < 170 && y > 0 && y < 170) {
-//                    Color color = new Color(231, 144, 56);
-//                    int colorInt = color.getRGB();
+//                    Color WHITE = new Color(231, 144, 56);
+//                    int colorInt = WHITE.getRGB();
 //                    pixels[y * qrcodeWidth + x] = matrix.get(x, y) ? colorInt
 //                            : 16777215;
 //                }
@@ -111,24 +117,23 @@ public class QrcodeUtils {
                         && y > halfH + iconHalfWidth - FRAME_WIDTH && y < halfH
                         + iconHalfWidth + FRAME_WIDTH)) {
 
-                    pixels[y * qrcodeWidth + x] = Color.white.getRGB();
+                    pixels[y * qrcodeWidth + x] = white.getRGB();
                 } else {
                     // 二维码颜色（RGB）
-                    int num1 = (int) (50 - (50.0 - 13.0) / matrix.getHeight() * (y + 1));
-                    int num2 = (int) (100 - (165.0 - 72.0) / matrix.getHeight() * (y + 1));
-                    int num3 = (int) (150 - (162.0 - 107.0) / matrix.getHeight() * (y + 1));
-                    Color color = new Color(num1, num2, num3);
-                    int colorInt = color.getRGB();
+//                    int num1 = (int) (foregroundColor.getRed() - (50.0 - 13.0) / matrix.getHeight() * (y + 1));
+//                    int num2 = (int) (foregroundColor.getGreen() - (165.0 - 72.0) / matrix.getHeight() * (y + 1));
+//                    int num3 = (int) (foregroundColor.getBlue() - (162.0 - 107.0) / matrix.getHeight() * (y + 1));
+//                    Color color = new Color(num1, num2, num3);
+//                    int colorInt = color.getRGB();
                     // 此处可以修改二维码的颜色，可以分别制定二维码和背景的颜色；
                     //最后那个是透明色
-                    pixels[y * qrcodeWidth + x] = matrix.get(x, y) ? colorInt : 16777215;
+                    pixels[y * qrcodeWidth + x] = matrix.get(x, y) ? foregroundColor.getRGB() : backgroundColor.getRGB();
                 }
             }
         }
-
         BufferedImage image = new BufferedImage(qrcodeWidth, qrcodeHeight, BufferedImage.TYPE_INT_ARGB);
         image.getRaster().setDataElements(0, 0, qrcodeWidth, qrcodeHeight, pixels);
-        return qrcodePaddingHandle(width, padding, image, color);
+        return qrcodePaddingHandle(width, padding, image, backgroundColor);
     }
 
     /**
@@ -253,13 +258,13 @@ public class QrcodeUtils {
      * @param matrix 矩阵
      * @return
      */
-    private static BufferedImage toBufferedImage(BitMatrix matrix, Color color) {
+    private static BufferedImage toBufferedImage(BitMatrix matrix, Color foregroundColor, Color backgroundColor) {
         int width = matrix.getWidth();
         int height = matrix.getHeight();
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                image.setRGB(x, y, matrix.get(x, y) ? BLACK : color.getRGB());
+                image.setRGB(x, y, matrix.get(x, y) ? foregroundColor.getRGB() : backgroundColor.getRGB());
             }
         }
         return image;
@@ -270,9 +275,9 @@ public class QrcodeUtils {
         File imageFile = new File("D:\\logo.jpg");
         //传进来的图
         BufferedImage srcImage = ImageIO.read(imageFile);
-        ImageIO.write(getComplexQrcode("http://www.baidu.com/http://www.baidu.com/http://www.baidu.com/http://www.baidu.com/", 500, srcImage, 0), "png", new File("D:\\201301.png"));
+        ImageIO.write(getComplexQrcode("http://www.baidu.com/http://www.baidu.com/http://www.baidu.com/http://www.baidu.com/", 500, srcImage, 0, new Color(1, 255, 1), new Color(255, 255, 255, 0)), "png", new File("D:\\201301.png"));
 
-        BufferedImage image = QrcodeUtils.createSimpleQrcode("http://www.baidu.com/http://www.baidu.com/http://www.baidu.com/http://www.baidu.com/", 500, 0, new Color(255, 255, 255, 0));
+        BufferedImage image = QrcodeUtils.createSimpleQrcode("http://www.baidu.com/http://www.baidu.com/http://www.baidu.com/http://www.baidu.com/", 500, 0, new Color(0, 0, 0), new Color(255, 255, 255, 0));
         try (FileOutputStream outputStream = new FileOutputStream("d:/zi.png")) {
             try (ByteArrayOutputStream file = QrcodeUtils.imageToStream(image)) {
                 outputStream.write(file.toByteArray());
