@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -27,7 +28,7 @@ public class QrcodeService {
         } catch (NumberFormatException e) {
             throw new BadRequestException("数字格式不正确");
         }
-        BufferedImage image = QrcodeUtils.createQrcode(content, width, padding);
+        BufferedImage image = QrcodeUtils.createSimpleQrcode(content, width, padding, new Color(255, 255, 255));
         try (ServletOutputStream outputStream = response.getOutputStream()) {
             try (ByteArrayOutputStream file = QrcodeUtils.imageToStream(image)) {
                 response.setContentLength(file.toByteArray().length);
