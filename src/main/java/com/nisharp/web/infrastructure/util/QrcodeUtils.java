@@ -56,14 +56,13 @@ public class QrcodeUtils {
         if (padding == 0) {
             return imageZoom(masterMap, width, width);
         } else if (padding > 0) {
-            int masterMapWidth = masterMap.getWidth();
-            int masterMapHeight = masterMap.getHeight();
+            //二维码目标宽度
             int targetWidth = width - (padding * 2);
             BufferedImage qrcode = imageZoom(masterMap, targetWidth, targetWidth);
+            return drawing(width, width, qrcode, padding, padding);
         } else {
             throw new RuntimeException("padding必须为自然数");
         }
-        return masterMap;
     }
 
     private static BitMatrix getBitMatrix(String content, int width) throws WriterException {
@@ -136,8 +135,8 @@ public class QrcodeUtils {
         Hashtable<EncodeHintType, Object> hints = new Hashtable<>();
         hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
         // 生成二维码
-        BitMatrix matrix = qrCodeWriter.encode(content, BarcodeFormat.QR_CODE, width, height, 0, hints);
-
+        BitMatrix matrix = getBitMatrix(content, width);
+        matrix = deleteWhite(matrix);
         // 二维矩阵转为一维像素数组
         int halfW = matrix.getWidth() / 2;
         int halfH = matrix.getHeight() / 2;
@@ -228,7 +227,7 @@ public class QrcodeUtils {
         QrcodeUtils.encode("http://www.baidu.com/http://www.baidu.com/http://www.baidu.com/http://www.baidu.com/", 700, 700, "D:\\logo.jpg",
                 "D:\\201301.png");
 
-        BufferedImage image = QrcodeUtils.createQrcode("http://www.baidu.com/http://www.baidu.com/http://www.baidu.com/http://www.baidu.com/", 1000, 1);
+        BufferedImage image = QrcodeUtils.createQrcode("http://www.baidu.com/http://www.baidu.com/http://www.baidu.com/http://www.baidu.com/", 1000, 20);
         try (FileOutputStream outputStream = new FileOutputStream("d:/zi.png")) {
             try (ByteArrayOutputStream file = QrcodeUtils.imageToStream(image)) {
                 outputStream.write(file.toByteArray());
