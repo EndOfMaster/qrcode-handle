@@ -26,10 +26,10 @@ public class AccessKeyService {
     }
 
     public AccessKey create(CreateAccessKeyRequest request) {
-        if (accessKeyRepository.countByAppId(request.getAppId()) >= 10) {
+        if (accessKeyRepository.countByUserId(request.getUserId()) >= 10) {
             throw new BadRequestException("您可以免费创建5个AccessKey。如需更多，请直接联系我们。");
         }
-        AccessKey accessKey = new AccessKey(request.getAppId(), request.getSecret(), request.getRemark(), request.isEnabled());
+        AccessKey accessKey = new AccessKey(request.getUserId(), request.getSecret(), request.getRemark(), request.isEnabled());
         return accessKeyRepository.insert(accessKey);
     }
 
@@ -54,7 +54,7 @@ public class AccessKeyService {
     }
 
     public List<AccessKey> list(String appId) {
-        return accessKeyRepository.findByAppId(appId);
+        return accessKeyRepository.findByUserId(appId);
     }
 
     public String getRandomStr() {

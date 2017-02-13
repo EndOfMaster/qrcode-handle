@@ -11,7 +11,7 @@ public class CreateAccessKeyRequest {
 
     @ApiModelProperty("应用id")
     @NotBlank
-    private String appId;
+    private String userId;
 
     @ApiModelProperty("accessSecret")
     @Length(min = 1, max = 32)
@@ -23,12 +23,12 @@ public class CreateAccessKeyRequest {
     @ApiModelProperty("是否启用")
     private boolean enabled;
 
-    public String getAppId() {
-        return appId;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setAppId(String appId) {
-        this.appId = appId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getSecret() {

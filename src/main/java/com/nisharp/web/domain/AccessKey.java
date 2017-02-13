@@ -10,15 +10,15 @@ import java.util.Date;
 public class AccessKey {
 
     private final String id;
-    private final String appId;
+    private final String userId;
     private final Date createdAt;
     private boolean enabled;
     private String secret;
     private String remark;
 
-    public AccessKey(String id, String appId, String secret, String remark, boolean enabled) {
+    public AccessKey(String id, String userId, String secret, String remark, boolean enabled) {
         this.id = id;
-        this.appId = appId;
+        this.userId = userId;
         this.secret = secret;
         this.remark = remark;
         this.createdAt = new Date();
@@ -26,13 +26,13 @@ public class AccessKey {
     }
 
     @PersistenceConstructor
-    public AccessKey(String appId, String secret, String remark, boolean enabled) {
-        this(null, appId, secret, remark, enabled);
+    public AccessKey(String userId, String secret, String remark, boolean enabled) {
+        this(null, userId, secret, remark, enabled);
     }
 
-    public AccessKey(String appId) {
+    public AccessKey(String userId) {
         this.id = null;
-        this.appId = appId;
+        this.userId = userId;
         this.createdAt = new Date();
         this.enabled = true;
     }
@@ -41,8 +41,8 @@ public class AccessKey {
         return id;
     }
 
-    public String getAppId() {
-        return appId;
+    public String getUserId() {
+        return userId;
     }
 
     public Date getCreatedAt() {

@@ -4,6 +4,7 @@ import cn.payingcloud.commons.rest.exception.BadRequestException;
 import cn.payingcloud.commons.rest.exception.NotFoundException;
 import com.nisharp.web.domain.SignUp;
 import com.nisharp.web.domain.User;
+import com.nisharp.web.infrastructure.mail.SpringMailPoster;
 import com.nisharp.web.infrastructure.util.DateUtils;
 import com.nisharp.web.infrastructure.util.RandomUtils;
 import com.nisharp.web.repository.SignUpRepository;
@@ -22,11 +23,13 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final SignUpRepository signUpRepository;
+    private final SpringMailPoster springMailPoster;
 
     @Autowired
-    public UserService(UserRepository userRepository, SignUpRepository signUpRepository) {
+    public UserService(UserRepository userRepository, SignUpRepository signUpRepository, SpringMailPoster springMailPoster) {
         this.userRepository = userRepository;
         this.signUpRepository = signUpRepository;
+        this.springMailPoster = springMailPoster;
     }
 
     public SignUp get(String signUpId, boolean allowNull) {
@@ -37,11 +40,11 @@ public class UserService {
         return signUp;
     }
 
-    public String getCode(String email) {
+    public void getCode(String email) {
         String code = RandomUtils.getRandomNum(6);
         SignUp signUp = new SignUp(email, code);
         signUpRepository.save(signUp);
-        return code;
+        springMailPoster.sendSignUpMail(email, code);
     }
 
     public void signUp(String email, String password, String code) {
@@ -56,5 +59,6 @@ public class UserService {
         User user = new User(email, password);
         userRepository.save(user);
     }
+
 
 }
